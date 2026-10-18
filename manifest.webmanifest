@@ -1,0 +1,11 @@
+{
+ "name": "Korean 1A 단어",
+ "short_name": "1A 단어",
+ "id": "./",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "background_color": "#0f1420",
+ "theme_color": "#0f1420",
+ "icons": []
+}

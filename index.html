@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Korean 1A — Vocabulary</title>
+<meta property="og:title" content="Korean 1A 단어장 · Vocabulary">
+<meta property="og:description" content="441 words and phrases · English ↔ Korean · browse, flashcards, search.">
+<meta property="og:type" content="website">
+<meta name="description" content="Sogang Korean 1A vocabulary — 441 words and phrases with English meanings.">
+<meta name="theme-color" content="#0f1420">
+<!-- installable as an app (full screen, own icon): manifest + the shared pass-through sw.js -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="1A 단어">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%96%3C/text%3E%3C/svg%3E">
+<style>
+  :root{
+    --bg:#0f1420; --bg2:#161d2e; --card:#1c2740; --card2:#223052;
+    --line:#2c3a5a; --txt:#eaf0fb; --dim:#96a3c2; --accent:#5b8cff;
+    --gold:#ffcf5c; --good:#37d18f; --warn:#ffb15c; --shadow:0 6px 20px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic","Apple SD Gothic Neo",
+      "Noto Sans KR","Microsoft YaHei","PingFang SC","Noto Sans SC","Leelawadee UI","Noto Sans Thai",Tahoma,Roboto,sans-serif;
+    background:linear-gradient(180deg,#0f1420,#0c1019 60%);color:var(--txt);
+    min-height:100vh;-webkit-font-smoothing:antialiased;
+  }
+  /* translations get the right script font first */
+  [lang="zh"],[lang="zh-Hans"]{font-family:"Microsoft YaHei","PingFang SC","Noto Sans SC","Hiragino Sans GB",sans-serif}
+  [lang="zh-Hant"]{font-family:"Microsoft JhengHei","PingFang TC","Noto Sans TC","Hiragino Sans TC","Microsoft YaHei",sans-serif}
+  [lang="th"]{font-family:"Leelawadee UI","Noto Sans Thai","Tahoma","Sarabun",sans-serif;line-height:1.5}
+  header{
+    position:sticky;top:0;z-index:20;background:rgba(15,20,32,.92);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:14px 16px 10px;
+  }
+  .titlebar{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  h1{font-size:19px;margin:0;font-weight:700;letter-spacing:.2px}
+  .sub{color:var(--dim);font-size:13px}
+  .langsw{margin-left:auto;display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+  .langsw button{padding:5px 9px;font-size:12px;border-radius:8px}
+  /* folded language switch: only the current language shows, tapping it opens the rest */
+  .langsw.folded button:not(.active){display:none}
+  .langsw.folded button.active::after{content:" ▾";opacity:.8}
+  .controls{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}
+  /* ---- collapsing header: the ⌃ button folds everything but the title line away ---- */
+  .hdrtog{margin-left:6px;align-self:center;background:var(--card);border:1px solid var(--line);color:var(--dim);
+    font-size:13px;line-height:1;padding:6px 8px;cursor:pointer;border-radius:8px}
+  .hdrtog:hover{color:var(--txt);background:var(--card)}
+  header.slim{padding:6px 16px}
+  header.slim .sub,header.slim .langsw,header.slim .controls{display:none}
+  header.slim .hdrtog{transform:rotate(180deg)}
+  header.slim h1{font-size:16px}
+  @media (max-width:640px){
+    header{padding:9px 12px 8px}
+    /* one tight title line: the word count goes, the title truncates, nothing wraps */
+    .titlebar{flex-wrap:nowrap;align-items:center}
+    .sub{display:none}
+    h1{font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .controls{margin-top:8px;gap:6px}
+    .btn{padding:7px 10px;font-size:13px}
+    .search{padding:7px 10px;font-size:14px;min-width:120px}
+    main{padding:10px 12px 40px}
+    .picker{padding:8px 12px 4px}
+  }
+  .search{
+    flex:1;min-width:160px;background:var(--bg2);border:1px solid var(--line);
+    color:var(--txt);border-radius:10px;padding:9px 12px;font-size:15px;outline:none;
+  }
+  .search::placeholder{color:#6b7898}
+  .btn{
+    background:var(--card);border:1px solid var(--line);color:var(--txt);
+    border-radius:10px;padding:9px 12px;font-size:14px;cursor:pointer;user-select:none;white-space:nowrap;
+  }
+  .btn:hover{border-color:var(--accent)}
+  .btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+  .seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .seg .btn{border:0;border-radius:0}
+  /* ---- chapter / section picker ---- */
+  .picker{padding:10px 16px 4px;border-bottom:1px solid var(--line);background:var(--bg2)}
+  .pickhdr{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px;cursor:pointer;user-select:none}
+  .pickhdr:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+  .pickhdr .t{font-size:13px;color:var(--dim)}
+  .pickhdr .cnt{font-size:12px;color:var(--good);margin-left:auto}
+  .pickhdr .mini{font-size:12px;padding:5px 9px;cursor:pointer}
+  .pickhdr .chev{font-size:10px;color:var(--dim);display:inline-block;transition:transform .15s;width:10px}
+  /* collapsed: the chapter rows fold away, the summary line in the header stays */
+  .picker.collapsed .chev{transform:rotate(-90deg)}
+  .picker.collapsed #chapters{display:none}
+  /* ---- games: a second fold under the picker, closed by default so it never gets in the way ---- */
+  .picker.collapsed #gamelinks{display:none}
+  .glinks{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px;padding:4px 0 8px}
+  .glink{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:12px;background:var(--card);border:1px solid var(--line);color:var(--txt);text-decoration:none}
+  .glink:hover{border-color:var(--accent)}
+  .glink b{font-size:15px}
+  .glink span{font-size:12px;color:var(--dim);line-height:1.4}
+  .gcat{grid-column:1/-1;margin:8px 0 0;padding-top:10px;border-top:1px solid var(--line);font-size:12px;font-weight:700;color:var(--dim)}
+  .glink .gbadge{align-self:flex-start;margin-top:6px;padding:2px 8px;border-radius:999px;border:1px solid var(--accent);color:var(--accent);font-size:11px;font-weight:700;line-height:1.5;white-space:nowrap}
+  .glink .gbadge.pc{border-color:#e0a23c;color:#e0a23c}
+  .glink .pcNote{display:none;margin-top:4px;color:#e0a23c;font-size:12px;font-weight:700}
+  @media (pointer:coarse){.glink .pcNote{display:block}}
+  .picker.collapsed .pickhdr{margin-bottom:0}
+  .picker.collapsed{padding-bottom:8px}
+  .chrow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:5px 0}
+  .chname{
+    font-size:13px;font-weight:700;padding:5px 10px;border-radius:8px;cursor:pointer;
+    background:var(--card);border:1px solid var(--line);min-width:64px;text-align:center;
+  }
+  .chname.on{background:#2a3d6b;border-color:var(--accent)}
+  .chname.part{border-color:var(--accent);background:var(--card)}
+  .chtheme{font-size:11px;color:#7f8db0;margin-right:4px}
+  .chip{
+    font-size:12.5px;padding:5px 10px;border-radius:999px;cursor:pointer;
+    background:var(--bg);border:1px solid var(--line);color:var(--dim);
+  }
+  .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .chip .n{opacity:.7;margin-left:5px;font-size:11px}
+  /* ---- browse ---- */
+  main{padding:14px 16px 40px;max-width:1100px;margin:0 auto}
+  .deckhdr{display:flex;align-items:baseline;gap:10px;margin:18px 0 8px;font-weight:700;font-size:15px}
+  .deckhdr .ds{color:var(--dim);font-weight:400;font-size:12px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
+  .vc{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:14px 12px;min-height:96px;cursor:pointer;position:relative;
+    display:flex;flex-direction:column;justify-content:center;transition:.15s;overflow:hidden;
+  }
+  .vc:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:var(--shadow)}
+  .vc .kr{font-size:20px;font-weight:700;line-height:1.3;margin-top:12px}
+  .vc .grp{font-size:10.5px;color:#7f8db0;margin-top:14px;line-height:1.3}
+  .vc .grp+.kr{margin-top:2px}
+  .exen{color:#7f8db0}
+  .vc .tr{color:var(--good);font-size:14px;margin-top:8px;line-height:1.35;display:none}
+  .vc .tr.none{color:var(--warn);font-style:italic}
+  .vc .ex{color:var(--dim);font-size:12px;margin-top:6px;line-height:1.35;display:none}
+  .vc.revealed .tr,.vc.revealed .ex{display:block}
+  .vc.revealed .kr{color:var(--accent)}
+  .vc.known{opacity:.45}
+  .star{position:absolute;top:8px;right:10px;color:var(--gold);font-size:13px}
+  .pos{position:absolute;top:8px;left:12px;color:#7f8db0;font-size:10px;letter-spacing:.4px;text-transform:lowercase;font-style:italic}
+  .tap{position:absolute;bottom:8px;right:10px;color:#4a5578;font-size:10px}
+  .vc.revealed .tap{display:none}
+  /* ---- flashcards ---- */
+  #flash{display:none;flex-direction:column;align-items:center;padding-top:16px}
+  .fcard{
+    width:100%;max-width:460px;min-height:280px;background:linear-gradient(160deg,var(--card),var(--card2));
+    border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:30px 24px;cursor:pointer;position:relative;user-select:none;
+  }
+  .fcard .fkr{font-size:44px;font-weight:800;line-height:1.25}
+  .fcard .ftr{font-size:22px;color:var(--good);margin-top:20px;display:none;line-height:1.4}
+  .fcard .ftr.none{color:var(--warn);font-style:italic;font-size:16px}
+  .fcard .fex{font-size:14px;color:var(--dim);margin-top:14px;display:none;line-height:1.45}
+  .fcard.flip .ftr,.fcard.flip .fex{display:block}
+  .fcard .hint{position:absolute;bottom:14px;left:0;right:0;color:#4a5578;font-size:12px}
+  .fcard.flip .hint{display:none}
+  .fstar{position:absolute;top:14px;right:18px;color:var(--gold);font-size:16px}
+  .fpos{position:absolute;top:16px;left:20px;color:#8593b8;font-size:13px;font-style:italic}
+  .fmeta{color:var(--dim);font-size:12px;margin-top:4px}
+  .fnav{display:flex;gap:10px;margin-top:18px;width:100%;max-width:460px}
+  .fnav .btn{flex:1;text-align:center;padding:13px;font-size:15px}
+  .progress{width:100%;max-width:460px;height:6px;background:var(--bg2);border-radius:3px;margin-top:16px;overflow:hidden}
+  .progress>i{display:block;height:100%;background:var(--accent);width:0;transition:.3s}
+  .counter{color:var(--dim);font-size:13px;margin-top:10px}
+  .empty{color:var(--dim);text-align:center;padding:60px 20px;font-size:15px}
+  footer{color:#55617f;font-size:11px;text-align:center;padding:20px}
+  /* ---- first-run language picker ---- */
+  #langpick{
+    position:fixed;inset:0;z-index:50;background:rgba(10,14,22,.96);
+    display:flex;align-items:center;justify-content:center;padding:24px;
+  }
+  #langpick[hidden]{display:none}
+  .lpbox{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:30px 26px;max-width:440px;width:100%;box-shadow:var(--shadow);text-align:center}
+  .lpbox h2{margin:0 0 6px;font-size:22px}
+  .lpbox p{margin:0 0 20px;color:var(--dim);font-size:14px}
+  .lpbox .opt{
+    display:block;width:100%;padding:16px;margin:10px 0;border-radius:14px;font-size:20px;font-weight:700;
+    background:var(--bg2);border:1px solid var(--line);color:var(--txt);cursor:pointer;
+  }
+  .lpbox .opt:hover{border-color:var(--accent);background:#233256}
+  .lpbox .opt small{display:block;font-size:12px;color:var(--dim);font-weight:400;margin-top:3px}
+  .lpbox .opt.go{background:var(--accent);border-color:var(--accent);color:#fff}
+  .lpbox .opt.go small{color:#e6edff}
+  .lpbox .chgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+  .lpbox .chgrid .opt{margin:0;font-size:18px;padding:12px 8px}
+  .lpbox .back{background:none;border:0;color:var(--dim);font:inherit;font-size:14px;cursor:pointer;padding:6px;margin-top:6px}
+  .lpbox .back:hover{color:var(--txt)}
+  #lpopts{max-height:70vh;overflow-y:auto}
+  .chbtnTop{margin-left:6px;align-self:center;background:var(--card);border:1px solid var(--line);color:var(--txt);
+    border-radius:10px;padding:6px 10px;font:inherit;font-size:13px;cursor:pointer;white-space:nowrap}
+  .chbtnTop:hover{border-color:var(--accent)}
+  @media(max-width:520px){
+    .grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
+    .fcard .fkr{font-size:38px}
+    h1{font-size:17px}
+  }
+  #grammarlink,#games,#starOnly{display:none!important}</style>
+</head>
+<body>
+
+<div id="langpick" hidden>
+  <div class="lpbox">
+    <h2>언어를 선택하세요</h2>
+    <p>Choose your language · 选择你的语言 · เลือกภาษาของคุณ</p>
+    <div id="lpopts"></div>
+  </div>
+</div>
+
+<header>
+  <div class="titlebar">
+    <h1>Korean 1A — <span data-i="vocab">Vocabulary</span></h1>
+    <span class="sub" id="totsub"></span>
+    <div class="langsw" id="langsw"></div>
+    <button class="chbtnTop" id="chTop" type="button">📚 <span data-i="chbtn">Parts</span></button>
+    <button class="hdrtog" id="hdrTog" aria-controls="hdr" aria-expanded="true" title="Hide/show the controls">⌃</button>
+  </div>
+  <div class="controls">
+    <input class="search" id="search" data-i="search" placeholder="Search…">
+    <div class="seg">
+      <button class="btn active" id="mBrowse" data-i="browse">Browse</button>
+      <button class="btn" id="mFlash" data-i="flash">Flashcards</button>
+    </div>
+    <button class="btn" id="starOnly">★ <span data-i="priority">Priority</span></button>
+    <button class="btn" id="revealAll" data-i="reveal">Reveal all</button>
+  </div>
+</header>
+
+<div class="picker" id="picker">
+  <div class="pickhdr" id="pickHdr" role="button" tabindex="0" aria-controls="chapters" aria-expanded="true">
+    <span class="chev" aria-hidden="true">▼</span>
+    <span class="t" data-i="pick">Pick the chapters and sections you want to preview</span>
+    <button class="btn mini" id="selAll" data-i="selall">All</button>
+    <button class="btn mini" id="selNone" data-i="selnone">None</button>
+    <span class="cnt" id="selcnt"></span>
+  </div>
+  <div id="chapters"></div>
+</div>
+
+<div class="picker">
+  <div id="grammarlink" class="glinks">
+    <a class="glink" href="grammar.html"><b>📘 문법·표현 · Grammar</b><span>5B 문법·표현 설명 · 예문 · 연습 · 퀴즈 (English · 中文 · ไทย · Русский · Tiếng Việt)</span></a>
+  </div>
+</div>
+
+<div class="picker collapsed" id="games">
+  <div class="pickhdr" id="gamesHdr" role="button" tabindex="0" aria-controls="gamelinks" aria-expanded="false">
+    <span class="chev" aria-hidden="true">▼</span>
+    <span class="t">🎮 시험 연습 게임 · Practice games</span>
+  </div>
+  <div id="gamelinks" class="glinks">
+    <a class="glink" href="exam.html"><b>📝 기말시험 연습 · Mock final</b><span>5급 말하기 어휘·문법 + 대화 · 39문제 60점 · 연습 모드와 실전 모드(60분)</span></a>
+    <a class="glink" href="swap.html"><b>🔁 바꿔 쓰기 · Word Swap</b><span>기말 복습 연습 3가지: 단어 바꿔 쓰기 · 문법 문장 만들기 · 부사 고르기 · 1–8과 · 콤보와 레벨</span></a>
+  </div>
+</div>
+
+<main>
+  <div id="browse"></div>
+  <div id="flash">
+    <div class="fcard" id="fcard">
+      <span class="fpos" id="fpos"></span>
+      <span class="fstar" id="fstar">★</span>
+      <div class="fkr" id="fkr"></div>
+      <div class="ftr" id="ftr"></div>
+      <div class="fex" id="fex"></div>
+      <div class="hint" data-i="tapflip">tap to flip</div>
+    </div>
+    <div class="fmeta" id="fmeta"></div>
+    <div class="progress"><i id="pbar"></i></div>
+    <div class="counter" id="counter"></div>
+    <div class="fnav">
+      <button class="btn" id="prevBtn">‹ <span data-i="prev">Prev</span></button>
+      <button class="btn" id="knowBtn">✓ <span data-i="gotit">Got it</span></button>
+      <button class="btn" id="nextBtn"><span data-i="next">Next</span> ›</button>
+    </div>
+    <div class="fnav">
+      <button class="btn" id="shuffleBtn" style="flex:1">🔀 <span data-i="shuffle">Shuffle</span></button>
+      <button class="btn" id="resetBtn" style="flex:1">↺ <span data-i="reset">Reset known</span></button>
+    </div>
+  </div>
+</main>
+<footer data-i="foot">Tap a card to see the meaning. ★ marks priority words. Sogang Korean 1A.</footer>
+
+<script>
+const DATA = {"level":"1A","languages":[{"code":"en","name":"English","native":"English","short":"English"}],"chapters":[{"id":"p1","n":1,"title":"Part 1","theme":"1–45","sections":[{"id":"p1-s","title":"words 1–45","cards":[{"id":"w001","kr":"-이에요 * -예요","pos":"","star":0,"ex":"","tr":{"en":"to be (am, is, are)"}},{"id":"w002","kr":"이게","pos":"","star":0,"ex":"","tr":{"en":"this thing (subject)"}},{"id":"w003","kr":"저게","pos":"","star":0,"ex":"","tr":{"en":"that thing over there (subject)"}},{"id":"w004","kr":"뭐예요?","pos":"","star":0,"ex":"","tr":{"en":"What is it?"}},{"id":"w005","kr":"있어요","pos":"","star":0,"ex":"","tr":{"en":"to have; to exist; to be"}},{"id":"w006","kr":"없어요","pos":"","star":0,"ex":"","tr":{"en":"to not have, to not exist; to not be"}},{"id":"w007","kr":"숫자","pos":"","star":0,"ex":"","tr":{"en":"number"}},{"id":"w008","kr":"개 명 병 * 권","pos":"","star":0,"ex":"","tr":{"en":"counters for things, people, bottles, books"}},{"id":"w009","kr":"몇 개?","pos":"","star":0,"ex":"","tr":{"en":"how many things?"}},{"id":"w010","kr":"-이 * -가","pos":"","star":0,"ex":"","tr":{"en":"subject marker"}},{"id":"w011","kr":"(장소)에 있어요","pos":"","star":0,"ex":"","tr":{"en":"to be at a location/place"}},{"id":"w012","kr":"얼마예요?","pos":"","star":0,"ex":"","tr":{"en":"How much is it?"}},{"id":"w013","kr":"몇 번","pos":"","star":0,"ex":"","tr":{"en":"what/which number"}},{"id":"w014","kr":"몇 월 며칠","pos":"","star":0,"ex":"","tr":{"en":"what date / which date"}},{"id":"w015","kr":"몇 시예요?","pos":"","star":0,"ex":"","tr":{"en":"What time is it?"}},{"id":"w016","kr":"(장소)에 가요","pos":"","star":0,"ex":"","tr":{"en":"to go to a place"}},{"id":"w017","kr":"-아 * -어요","pos":"","star":0,"ex":"","tr":{"en":"present tense (informal polite style)"}},{"id":"w018","kr":"(시간)에","pos":"","star":0,"ex":"","tr":{"en":"time marker"}},{"id":"w019","kr":"뭐 해요?","pos":"","star":0,"ex":"","tr":{"en":"What are you doing?"}},{"id":"w020","kr":"-을 * -를","pos":"","star":0,"ex":"","tr":{"en":"object marker"}},{"id":"w021","kr":"-아* -어요","pos":"","star":0,"ex":"","tr":{"en":"informal polite verb ending"}},{"id":"w022","kr":"-에서","pos":"","star":0,"ex":"","tr":{"en":"in, at (dynamic location)"}},{"id":"w023","kr":"-았 * -었어요","pos":"","star":0,"ex":"","tr":{"en":"Informal polite past tense ending"}},{"id":"w024","kr":"안","pos":"","star":0,"ex":"","tr":{"en":"not"}},{"id":"w025","kr":"-도","pos":"","star":0,"ex":"","tr":{"en":"also, too"}},{"id":"w026","kr":"으","pos":"","star":0,"ex":"","tr":{"en":"irregular verbs, adjectives"}},{"id":"w027","kr":"위","pos":"","star":0,"ex":"","tr":{"en":"on"}},{"id":"w028","kr":"아래","pos":"","star":0,"ex":"","tr":{"en":"under"}},{"id":"w029","kr":"앞","pos":"","star":0,"ex":"","tr":{"en":"in front of"}},{"id":"w030","kr":"뒤","pos":"","star":0,"ex":"","tr":{"en":"behind"}},{"id":"w031","kr":"옆","pos":"","star":0,"ex":"","tr":{"en":"beside"}},{"id":"w032","kr":"사이","pos":"","star":0,"ex":"","tr":{"en":"between"}},{"id":"w033","kr":"-으러 가요","pos":"","star":0,"ex":"","tr":{"en":"to go in order to do something"}},{"id":"w034","kr":"-으러 와요","pos":"","star":0,"ex":"","tr":{"en":"to come (in order) to do something"}},{"id":"w035","kr":"-하고","pos":"","star":0,"ex":"","tr":{"en":"and"}},{"id":"w036","kr":"-습니다","pos":"","star":0,"ex":"","tr":{"en":"formal polite ending for a statement"}},{"id":"w037","kr":"-으로","pos":"","star":0,"ex":"","tr":{"en":"by means of"}},{"id":"w038","kr":"-으세요","pos":"","star":0,"ex":"","tr":{"en":"please do"}},{"id":"w039","kr":"-지 마세요","pos":"","star":0,"ex":"","tr":{"en":"added to verb stem to say to not do something"}},{"id":"w040","kr":"-고 싶어요","pos":"","star":0,"ex":"","tr":{"en":"to want to"}},{"id":"w041","kr":"-에서","pos":"","star":0,"ex":"","tr":{"en":"from (location)"}},{"id":"w042","kr":"-까지","pos":"","star":0,"ex":"","tr":{"en":"up to (location)"}},{"id":"w043","kr":"보세요","pos":"","star":0,"ex":"","tr":{"en":"Please look"}},{"id":"w044","kr":"잘 들으세요.","pos":"","star":0,"ex":"","tr":{"en":"Please listen carefully."}},{"id":"w045","kr":"읽으세요","pos":"","star":0,"ex":"","tr":{"en":"Please read"}}]}]},{"id":"p2","n":2,"title":"Part 2","theme":"46–90","sections":[{"id":"p2-s","title":"words 46–90","cards":[{"id":"w046","kr":"쓰세요","pos":"","star":0,"ex":"","tr":{"en":"Please write"}},{"id":"w047","kr":"숙제하세요","pos":"","star":0,"ex":"","tr":{"en":"Please do your homework."}},{"id":"w048","kr":"대답하세요","pos":"","star":0,"ex":"","tr":{"en":"please answer"}},{"id":"w049","kr":"잘 했어요","pos":"","star":0,"ex":"","tr":{"en":"good job"}},{"id":"w050","kr":"나오세요","pos":"","star":0,"ex":"","tr":{"en":"please come out"}},{"id":"w051","kr":"그룹 만드세요.","pos":"","star":0,"ex":"","tr":{"en":"Please make a group."}},{"id":"w052","kr":"연습하세요.","pos":"","star":0,"ex":"","tr":{"en":"Please practice"}},{"id":"w053","kr":"외우세요.","pos":"","star":0,"ex":"","tr":{"en":"Please memorize it."}},{"id":"w054","kr":"따라하세요","pos":"","star":0,"ex":"","tr":{"en":"Repeat after me"}},{"id":"w055","kr":"질문 있어요?","pos":"","star":0,"ex":"","tr":{"en":"Do you have any questions?"}},{"id":"w056","kr":"알겠어요?","pos":"","star":0,"ex":"","tr":{"en":"Do you understand?"}},{"id":"w057","kr":"그만 하세요.","pos":"","star":0,"ex":"","tr":{"en":"Please stop it"}},{"id":"w058","kr":"가세요","pos":"","star":0,"ex":"","tr":{"en":"please go"}},{"id":"w059","kr":"먹으세요/드세요","pos":"","star":0,"ex":"","tr":{"en":"Help yourself"}},{"id":"w060","kr":"시작하세요","pos":"","star":0,"ex":"","tr":{"en":"Please start"}},{"id":"w061","kr":"다 했어요","pos":"","star":0,"ex":"","tr":{"en":"Are you done?"}},{"id":"w062","kr":"숙제했어요?","pos":"","star":0,"ex":"","tr":{"en":"Did you do your homework?"}},{"id":"w063","kr":"감사합니다","pos":"","star":0,"ex":"","tr":{"en":"Thank you (formal)"}},{"id":"w064","kr":"책 5쪽을 보세요","pos":"","star":0,"ex":"","tr":{"en":"Please look at page 5 of your book."}},{"id":"w065","kr":"고기","pos":"","star":0,"ex":"","tr":{"en":"meat"}},{"id":"w066","kr":"구두","pos":"","star":0,"ex":"","tr":{"en":"shoes"}},{"id":"w067","kr":"까지","pos":"","star":0,"ex":"","tr":{"en":"up to (location)"}},{"id":"w068","kr":"나무","pos":"","star":0,"ex":"","tr":{"en":"tree"}},{"id":"w069","kr":"여기","pos":"","star":0,"ex":"","tr":{"en":"here"}},{"id":"w070","kr":"아빠","pos":"","star":0,"ex":"","tr":{"en":"dad"}},{"id":"w071","kr":"기자","pos":"","star":0,"ex":"","tr":{"en":"journalist"}},{"id":"w072","kr":"부모","pos":"","star":0,"ex":"","tr":{"en":"parents"}},{"id":"w073","kr":"짜다","pos":"","star":0,"ex":"","tr":{"en":"salty"}},{"id":"w074","kr":"모자","pos":"","star":0,"ex":"","tr":{"en":"hat"}},{"id":"w075","kr":"바다","pos":"","star":0,"ex":"","tr":{"en":"ocean"}},{"id":"w076","kr":"누나","pos":"","star":0,"ex":"","tr":{"en":"older sister"}},{"id":"w077","kr":"뿌리","pos":"","star":0,"ex":"","tr":{"en":"root"}},{"id":"w078","kr":"드라마","pos":"","star":0,"ex":"","tr":{"en":"drama"}},{"id":"w079","kr":"안녕하세요?","pos":"","star":0,"ex":"","tr":{"en":"Hello"}},{"id":"w080","kr":"만나서 반갑습니다","pos":"","star":0,"ex":"","tr":{"en":"Nice to meet you"}},{"id":"w081","kr":"이름이 뭐예요?","pos":"","star":0,"ex":"","tr":{"en":"What is your name?"}},{"id":"w082","kr":"이분이 누구예요?","pos":"","star":0,"ex":"","tr":{"en":"Who is this person?"}},{"id":"w083","kr":"한국 사람이에요?","pos":"","star":0,"ex":"","tr":{"en":"Are you Korean?"}},{"id":"w084","kr":"네, 한국 사람이에요.","pos":"","star":0,"ex":"","tr":{"en":"Yes, I am Korean."}},{"id":"w085","kr":"회사원이에요?","pos":"","star":0,"ex":"","tr":{"en":"Are you an office worker?"}},{"id":"w086","kr":"아니요, 의사예요","pos":"","star":0,"ex":"","tr":{"en":"No, I am a doctor."}},{"id":"w087","kr":"아, 그래요?","pos":"","star":0,"ex":"","tr":{"en":"Ah, really?"}},{"id":"w088","kr":"수업","pos":"","star":0,"ex":"","tr":{"en":"class"}},{"id":"w089","kr":"정말","pos":"","star":0,"ex":"","tr":{"en":"really"}},{"id":"w090","kr":"하고","pos":"","star":0,"ex":"","tr":{"en":"with"}}]}]},{"id":"p3","n":3,"title":"Part 3","theme":"91–135","sections":[{"id":"p3-s","title":"words 91–135","cards":[{"id":"w091","kr":"미안해요","pos":"","star":0,"ex":"","tr":{"en":"I'm sorry"}},{"id":"w092","kr":"요즘 잘 지내요?","pos":"","star":0,"ex":"","tr":{"en":"How have you been lately?"}},{"id":"w093","kr":"네, 잘 지내요.","pos":"","star":0,"ex":"","tr":{"en":"Yes, I have been well."}},{"id":"w094","kr":"안녕히 계세요","pos":"","star":0,"ex":"","tr":{"en":"Goodbye (to person staying)"}},{"id":"w095","kr":"네, 안녕히 계세요.","pos":"","star":0,"ex":"","tr":{"en":"Yes, goodbye. (telephone)"}},{"id":"w096","kr":"길","pos":"","star":0,"ex":"","tr":{"en":"street"}},{"id":"w097","kr":"-들","pos":"","star":0,"ex":"","tr":{"en":"plural marker"}},{"id":"w098","kr":"목욕탕","pos":"","star":0,"ex":"","tr":{"en":"public bathhouse"}},{"id":"w099","kr":"밖","pos":"","star":0,"ex":"","tr":{"en":"outside"}},{"id":"w100","kr":"방","pos":"","star":0,"ex":"","tr":{"en":"room"}},{"id":"w101","kr":"사람","pos":"","star":0,"ex":"","tr":{"en":"person"}},{"id":"w102","kr":"자동차","pos":"","star":0,"ex":"","tr":{"en":"car"}},{"id":"w103","kr":"조용하다","pos":"","star":0,"ex":"","tr":{"en":"to be quiet"}},{"id":"w104","kr":"지금","pos":"","star":0,"ex":"","tr":{"en":"right now"}},{"id":"w105","kr":"약속이 있어요","pos":"","star":0,"ex":"","tr":{"en":"to have an appointment"}},{"id":"w106","kr":"오늘","pos":"","star":0,"ex":"","tr":{"en":"today"}},{"id":"w107","kr":"우체국","pos":"","star":0,"ex":"","tr":{"en":"post office"}},{"id":"w108","kr":"보통","pos":"","star":0,"ex":"","tr":{"en":"usually"}},{"id":"w109","kr":"그럼, 뭐 해요?","pos":"","star":0,"ex":"","tr":{"en":"Then, what are you going to do?"}},{"id":"w110","kr":"잘 가요","pos":"","star":0,"ex":"","tr":{"en":"Get home safely"}},{"id":"w111","kr":"지금 어디에 가요?","pos":"","star":0,"ex":"","tr":{"en":"Where are you going now?"}},{"id":"w112","kr":"공부하다","pos":"","star":0,"ex":"","tr":{"en":"to study"}},{"id":"w113","kr":"세수하다","pos":"","star":0,"ex":"","tr":{"en":"to wash one's face"}},{"id":"w114","kr":"쇼핑하다","pos":"","star":0,"ex":"","tr":{"en":"to go shopping"}},{"id":"w115","kr":"숙제하다","pos":"","star":0,"ex":"","tr":{"en":"to do homework"}},{"id":"w116","kr":"운동하다","pos":"","star":0,"ex":"","tr":{"en":"to exercise"}},{"id":"w117","kr":"이야기하다","pos":"","star":0,"ex":"","tr":{"en":"to talk"}},{"id":"w118","kr":"일하다","pos":"","star":0,"ex":"","tr":{"en":"to work"}},{"id":"w119","kr":"전화하다","pos":"","star":0,"ex":"","tr":{"en":"to make a phone call"}},{"id":"w120","kr":"아침 식사하다","pos":"","star":0,"ex":"","tr":{"en":"to have breakfast"}},{"id":"w121","kr":"점심 식사하다","pos":"","star":0,"ex":"","tr":{"en":"to have lunch"}},{"id":"w122","kr":"저녁 식사하다","pos":"","star":0,"ex":"","tr":{"en":"to have dinner"}},{"id":"w123","kr":"(장소)에 가다","pos":"","star":0,"ex":"","tr":{"en":"to go"}},{"id":"w124","kr":"오전","pos":"","star":0,"ex":"","tr":{"en":"morning"}},{"id":"w125","kr":"오후","pos":"","star":0,"ex":"","tr":{"en":"afternoon"}},{"id":"w126","kr":"아침","pos":"","star":0,"ex":"","tr":{"en":"morning, breakfast"}},{"id":"w127","kr":"점심","pos":"","star":0,"ex":"","tr":{"en":"lunch"}},{"id":"w128","kr":"저녁","pos":"","star":0,"ex":"","tr":{"en":"dinner"}},{"id":"w129","kr":"밤","pos":"","star":0,"ex":"","tr":{"en":"night"}},{"id":"w130","kr":"시","pos":"","star":0,"ex":"","tr":{"en":"o'clock"}},{"id":"w131","kr":"분","pos":"","star":0,"ex":"","tr":{"en":"minute"}},{"id":"w132","kr":"지금 몇 시예요?","pos":"","star":0,"ex":"","tr":{"en":"What time is it?"}},{"id":"w133","kr":"여덟 시 반이에요.","pos":"","star":0,"ex":"","tr":{"en":"It's eight-thirty."}},{"id":"w134","kr":"층","pos":"","star":0,"ex":"","tr":{"en":"For floors and layers"}},{"id":"w135","kr":"과","pos":"","star":0,"ex":"","tr":{"en":"For lesson numbers"}}]}]},{"id":"p4","n":4,"title":"Part 4","theme":"136–180","sections":[{"id":"p4-s","title":"words 136–180","cards":[{"id":"w136","kr":"원","pos":"","star":0,"ex":"","tr":{"en":"Won (Korean currency)"}},{"id":"w137","kr":"학년","pos":"","star":0,"ex":"","tr":{"en":"School year, grade level"}},{"id":"w138","kr":"년","pos":"","star":0,"ex":"","tr":{"en":"Year"}},{"id":"w139","kr":"월","pos":"","star":0,"ex":"","tr":{"en":"Month"}},{"id":"w140","kr":"일","pos":"","star":0,"ex":"","tr":{"en":"Day"}},{"id":"w141","kr":"영/공","pos":"","star":0,"ex":"","tr":{"en":"Zero"}},{"id":"w142","kr":"일","pos":"","star":0,"ex":"","tr":{"en":"One"}},{"id":"w143","kr":"이","pos":"","star":0,"ex":"","tr":{"en":"Two"}},{"id":"w144","kr":"삼","pos":"","star":0,"ex":"","tr":{"en":"Three"}},{"id":"w145","kr":"사","pos":"","star":0,"ex":"","tr":{"en":"Four"}},{"id":"w146","kr":"오","pos":"","star":0,"ex":"","tr":{"en":"Five"}},{"id":"w147","kr":"육","pos":"","star":0,"ex":"","tr":{"en":"Six"}},{"id":"w148","kr":"칠","pos":"","star":0,"ex":"","tr":{"en":"Seven"}},{"id":"w149","kr":"팔","pos":"","star":0,"ex":"","tr":{"en":"Eight"}},{"id":"w150","kr":"구","pos":"","star":0,"ex":"","tr":{"en":"Nine"}},{"id":"w151","kr":"십","pos":"","star":0,"ex":"","tr":{"en":"Ten"}},{"id":"w152","kr":"십일","pos":"","star":0,"ex":"","tr":{"en":"Eleven"}},{"id":"w153","kr":"십이","pos":"","star":0,"ex":"","tr":{"en":"Twelve"}},{"id":"w154","kr":"십삼","pos":"","star":0,"ex":"","tr":{"en":"Thirteen"}},{"id":"w155","kr":"십사","pos":"","star":0,"ex":"","tr":{"en":"Fourteen"}},{"id":"w156","kr":"십오","pos":"","star":0,"ex":"","tr":{"en":"Fifteen"}},{"id":"w157","kr":"십육","pos":"","star":0,"ex":"","tr":{"en":"Sixteen"}},{"id":"w158","kr":"십칠","pos":"","star":0,"ex":"","tr":{"en":"Seventeen"}},{"id":"w159","kr":"십팔","pos":"","star":0,"ex":"","tr":{"en":"Eighteen"}},{"id":"w160","kr":"십구","pos":"","star":0,"ex":"","tr":{"en":"Nineteen"}},{"id":"w161","kr":"이십","pos":"","star":0,"ex":"","tr":{"en":"Twenty"}},{"id":"w162","kr":"삼십","pos":"","star":0,"ex":"","tr":{"en":"Thirty"}},{"id":"w163","kr":"사십","pos":"","star":0,"ex":"","tr":{"en":"Forty"}},{"id":"w164","kr":"오십","pos":"","star":0,"ex":"","tr":{"en":"Fifty"}},{"id":"w165","kr":"육십","pos":"","star":0,"ex":"","tr":{"en":"Sixty"}},{"id":"w166","kr":"칠십","pos":"","star":0,"ex":"","tr":{"en":"Seventy"}},{"id":"w167","kr":"팔십","pos":"","star":0,"ex":"","tr":{"en":"Eighty"}},{"id":"w168","kr":"구십","pos":"","star":0,"ex":"","tr":{"en":"Ninety"}},{"id":"w169","kr":"백","pos":"","star":0,"ex":"","tr":{"en":"One hundred"}},{"id":"w170","kr":"천","pos":"","star":0,"ex":"","tr":{"en":"One thousand"}},{"id":"w171","kr":"만","pos":"","star":0,"ex":"","tr":{"en":"Ten Thousand"}},{"id":"w172","kr":"지금","pos":"","star":0,"ex":"","tr":{"en":"right now"}},{"id":"w173","kr":"시간 있어요?","pos":"","star":0,"ex":"","tr":{"en":"Are you free?"}},{"id":"w174","kr":"실례지만, 누구세요?","pos":"","star":0,"ex":"","tr":{"en":"Excuse me, but who is speaking?"}},{"id":"w175","kr":"(이름) 씨 좀 바꿔 주세요.","pos":"","star":0,"ex":"","tr":{"en":"May I speak to — please?"}},{"id":"w176","kr":"(이름) 씨 집이에요?","pos":"","star":0,"ex":"","tr":{"en":"Is this (name)'s house?"}},{"id":"w177","kr":"아, 그래요?","pos":"","star":0,"ex":"","tr":{"en":"Ah, really?"}},{"id":"w178","kr":"여보세요.","pos":"","star":0,"ex":"","tr":{"en":"hello (on the telephone)"}},{"id":"w179","kr":"와요?","pos":"","star":0,"ex":"","tr":{"en":"Why?"}},{"id":"w180","kr":"핸드폰 번호가 몇 번이에요?","pos":"","star":0,"ex":"","tr":{"en":"What is your cell phone number?"}}]}]},{"id":"p5","n":5,"title":"Part 5","theme":"181–225","sections":[{"id":"p5-s","title":"words 181–225","cards":[{"id":"w181","kr":"신문","pos":"","star":0,"ex":"","tr":{"en":"newspaper"}},{"id":"w182","kr":"이메일","pos":"","star":0,"ex":"","tr":{"en":"email"}},{"id":"w183","kr":"집","pos":"","star":0,"ex":"","tr":{"en":"home, house"}},{"id":"w184","kr":"친구","pos":"","star":0,"ex":"","tr":{"en":"friend"}},{"id":"w185","kr":"핸드폰 번호","pos":"","star":0,"ex":"","tr":{"en":"cell phone number"}},{"id":"w186","kr":"친구가 많아요.","pos":"","star":0,"ex":"","tr":{"en":"I have many friends."}},{"id":"w187","kr":"내일","pos":"","star":0,"ex":"","tr":{"en":"tomorrow"}},{"id":"w188","kr":"생일","pos":"","star":0,"ex":"","tr":{"en":"birthday"}},{"id":"w189","kr":"-원","pos":"","star":0,"ex":"","tr":{"en":"won (Korean currency)"}},{"id":"w190","kr":"전화번호","pos":"","star":0,"ex":"","tr":{"en":"Telephone number"}},{"id":"w191","kr":"표","pos":"","star":0,"ex":"","tr":{"en":"ticket"}},{"id":"w192","kr":"A: 맞아요? B: 네, 맞아요","pos":"","star":0,"ex":"","tr":{"en":"A: Is that right? / B: Yes, that's right."}},{"id":"w193","kr":"생일이 며칠이에요?","pos":"","star":0,"ex":"","tr":{"en":"What date is your birthday?"}},{"id":"w194","kr":"어서 오세요.","pos":"","star":0,"ex":"","tr":{"en":"Welcome! Come in."}},{"id":"w195","kr":"얼마예요?","pos":"","star":0,"ex":"","tr":{"en":"How much is this?"}},{"id":"w196","kr":"전화번호가 몇 번이에요?","pos":"","star":0,"ex":"","tr":{"en":"What is your telephone number?"}},{"id":"w197","kr":"(생일) 축하합니다.","pos":"","star":0,"ex":"","tr":{"en":"Happy birthday (formal)"}},{"id":"w198","kr":"백","pos":"","star":0,"ex":"","tr":{"en":"100 (Sino-Korean)"}},{"id":"w199","kr":"천","pos":"","star":0,"ex":"","tr":{"en":"1000 (Sino Korean)"}},{"id":"w200","kr":"만","pos":"","star":0,"ex":"","tr":{"en":"10,000 (Sino-Korean)"}},{"id":"w201","kr":"주세요","pos":"","star":0,"ex":"","tr":{"en":"Please give me..."}},{"id":"w202","kr":"미안해요","pos":"","star":0,"ex":"","tr":{"en":"I'm sorry"}},{"id":"w203","kr":"여기요","pos":"","star":0,"ex":"","tr":{"en":"excuse me"}},{"id":"w204","kr":"레몬차 주세요","pos":"","star":0,"ex":"","tr":{"en":"Lemon tea, please."}},{"id":"w205","kr":"여기 있어요","pos":"","star":0,"ex":"","tr":{"en":"here it is"}},{"id":"w206","kr":"감사합니다","pos":"","star":0,"ex":"","tr":{"en":"Thank you (formal)"}},{"id":"w207","kr":"있어요","pos":"","star":0,"ex":"","tr":{"en":"To have"}},{"id":"w208","kr":"없어요","pos":"","star":0,"ex":"","tr":{"en":"don't have"}},{"id":"w209","kr":"볼펜","pos":"","star":0,"ex":"","tr":{"en":"ball point pen"}},{"id":"w210","kr":"사전","pos":"","star":0,"ex":"","tr":{"en":"dictionary"}},{"id":"w211","kr":"연필","pos":"","star":0,"ex":"","tr":{"en":"pencil"}},{"id":"w212","kr":"의자","pos":"","star":0,"ex":"","tr":{"en":"chair"}},{"id":"w213","kr":"지우개","pos":"","star":0,"ex":"","tr":{"en":"eraser"}},{"id":"w214","kr":"책","pos":"","star":0,"ex":"","tr":{"en":"book"}},{"id":"w215","kr":"책상","pos":"","star":0,"ex":"","tr":{"en":"desk"}},{"id":"w216","kr":"필통","pos":"","star":0,"ex":"","tr":{"en":"pencil case"}},{"id":"w217","kr":"가방","pos":"","star":0,"ex":"","tr":{"en":"bag"}},{"id":"w218","kr":"구두","pos":"","star":0,"ex":"","tr":{"en":"shoes"}},{"id":"w219","kr":"모자","pos":"","star":0,"ex":"","tr":{"en":"hat"}},{"id":"w220","kr":"시계","pos":"","star":0,"ex":"","tr":{"en":"clock, watch"}},{"id":"w221","kr":"안경","pos":"","star":0,"ex":"","tr":{"en":"glasses"}},{"id":"w222","kr":"복사기","pos":"","star":0,"ex":"","tr":{"en":"copy machine"}},{"id":"w223","kr":"전자 사전","pos":"","star":0,"ex":"","tr":{"en":"electronic dictionary"}},{"id":"w224","kr":"카메라","pos":"","star":0,"ex":"","tr":{"en":"camera"}},{"id":"w225","kr":"컴퓨터","pos":"","star":0,"ex":"","tr":{"en":"Computer"}}]}]},{"id":"p6","n":6,"title":"Part 6","theme":"226–270","sections":[{"id":"p6-s","title":"words 226–270","cards":[{"id":"w226","kr":"핸드폰","pos":"","star":0,"ex":"","tr":{"en":"cell phone"}},{"id":"w227","kr":"우산","pos":"","star":0,"ex":"","tr":{"en":"umbrella"}},{"id":"w228","kr":"컵","pos":"","star":0,"ex":"","tr":{"en":"cup"}},{"id":"w229","kr":"사과","pos":"","star":0,"ex":"","tr":{"en":"apple"}},{"id":"w230","kr":"친구","pos":"","star":0,"ex":"","tr":{"en":"friend"}},{"id":"w231","kr":"공책","pos":"","star":0,"ex":"","tr":{"en":"notebook"}},{"id":"w232","kr":"아저씨","pos":"","star":0,"ex":"","tr":{"en":"older man not related to you"}},{"id":"w233","kr":"봉투","pos":"","star":0,"ex":"","tr":{"en":"envelope"}},{"id":"w234","kr":"가위","pos":"","star":0,"ex":"","tr":{"en":"scissors"}},{"id":"w235","kr":"교실","pos":"","star":0,"ex":"","tr":{"en":"classroom"}},{"id":"w236","kr":"극장","pos":"","star":0,"ex":"","tr":{"en":"theater"}},{"id":"w237","kr":"대사관","pos":"","star":0,"ex":"","tr":{"en":"embassy"}},{"id":"w238","kr":"도서관","pos":"","star":0,"ex":"","tr":{"en":"library"}},{"id":"w239","kr":"문구점","pos":"","star":0,"ex":"","tr":{"en":"stationary store"}},{"id":"w240","kr":"병원","pos":"","star":0,"ex":"","tr":{"en":"hospital"}},{"id":"w241","kr":"서점","pos":"","star":0,"ex":"","tr":{"en":"bookstore"}},{"id":"w242","kr":"수영장","pos":"","star":0,"ex":"","tr":{"en":"swimming pool"}},{"id":"w243","kr":"식당","pos":"","star":0,"ex":"","tr":{"en":"restaurant"}},{"id":"w244","kr":"은행","pos":"","star":0,"ex":"","tr":{"en":"bank"}},{"id":"w245","kr":"학교","pos":"","star":0,"ex":"","tr":{"en":"school"}},{"id":"w246","kr":"화장실","pos":"","star":0,"ex":"","tr":{"en":"bathroom"}},{"id":"w247","kr":"회사","pos":"","star":0,"ex":"","tr":{"en":"company"}},{"id":"w248","kr":"실례합니다","pos":"","star":0,"ex":"","tr":{"en":"excuse me"}},{"id":"w249","kr":"어디에 있어요","pos":"","star":0,"ex":"","tr":{"en":"Where is it?"}},{"id":"w250","kr":"잠실 알아요","pos":"","star":0,"ex":"","tr":{"en":"Do you know Jamshil?"}},{"id":"w251","kr":"네, 알아요.","pos":"","star":0,"ex":"","tr":{"en":"Yes, I do."}},{"id":"w252","kr":"고마워요","pos":"","star":0,"ex":"","tr":{"en":"Thank you"}},{"id":"w253","kr":"이게 뭐예요?","pos":"","star":0,"ex":"","tr":{"en":"What is this?"}},{"id":"w254","kr":"누구 거예요?","pos":"","star":0,"ex":"","tr":{"en":"Whose is it?"}},{"id":"w255","kr":"이분이 누구예요?","pos":"","star":0,"ex":"","tr":{"en":"Who is this person?"}},{"id":"w256","kr":"제 거예요.","pos":"","star":0,"ex":"","tr":{"en":"It's mine"}},{"id":"w257","kr":"전화번호 뭐예요?","pos":"","star":0,"ex":"","tr":{"en":"What is your phone number?"}},{"id":"w258","kr":"몇 살이에요?","pos":"","star":0,"ex":"","tr":{"en":"How old are you?"}},{"id":"w259","kr":"사는 곳은 어디예요?","pos":"","star":0,"ex":"","tr":{"en":"Where do you live?"}},{"id":"w260","kr":"하나. (한 with counter)","pos":"","star":0,"ex":"","tr":{"en":"1 (native)."}},{"id":"w261","kr":"둘. (두 with counter)","pos":"","star":0,"ex":"","tr":{"en":"2 (native)"}},{"id":"w262","kr":"셋. (세 with counter)","pos":"","star":0,"ex":"","tr":{"en":"3 (native)"}},{"id":"w263","kr":"넷. (네 with counter)","pos":"","star":0,"ex":"","tr":{"en":"4 (native)"}},{"id":"w264","kr":"다섯. (Same with counter)","pos":"","star":0,"ex":"","tr":{"en":"5 (native)"}},{"id":"w265","kr":"여섯. (same with counter)","pos":"","star":0,"ex":"","tr":{"en":"6 (native)"}},{"id":"w266","kr":"일곱. (same with counter)","pos":"","star":0,"ex":"","tr":{"en":"7 (native)"}},{"id":"w267","kr":"여덟. (same with counter)","pos":"","star":0,"ex":"","tr":{"en":"8 (native)"}},{"id":"w268","kr":"아홉. (same with counter)","pos":"","star":0,"ex":"","tr":{"en":"9 (native)"}},{"id":"w269","kr":"열. (same with counter)","pos":"","star":0,"ex":"","tr":{"en":"10"}},{"id":"w270","kr":"녹차","pos":"","star":0,"ex":"","tr":{"en":"green tea"}}]}]},{"id":"p7","n":7,"title":"Part 7","theme":"271–315","sections":[{"id":"p7-s","title":"words 271–315","cards":[{"id":"w271","kr":"레몬차","pos":"","star":0,"ex":"","tr":{"en":"Lemon tea"}},{"id":"w272","kr":"맥주","pos":"","star":0,"ex":"","tr":{"en":"beer"}},{"id":"w273","kr":"물","pos":"","star":0,"ex":"","tr":{"en":"water"}},{"id":"w274","kr":"사이다","pos":"","star":0,"ex":"","tr":{"en":"Sprite"}},{"id":"w275","kr":"콜라","pos":"","star":0,"ex":"","tr":{"en":"coke"}},{"id":"w276","kr":"오렌지주스","pos":"","star":0,"ex":"","tr":{"en":"orange juice"}},{"id":"w277","kr":"커피","pos":"","star":0,"ex":"","tr":{"en":"coffee"}},{"id":"w278","kr":"권","pos":"","star":0,"ex":"","tr":{"en":"counter for books"}},{"id":"w279","kr":"병","pos":"","star":0,"ex":"","tr":{"en":"counter for bottles"}},{"id":"w280","kr":"개","pos":"","star":0,"ex":"","tr":{"en":"counter for things"}},{"id":"w281","kr":"장","pos":"","star":0,"ex":"","tr":{"en":"paper counter"}},{"id":"w282","kr":"명","pos":"","star":0,"ex":"","tr":{"en":"counter for people"}},{"id":"w283","kr":"감사합니다","pos":"","star":0,"ex":"","tr":{"en":"thank you"}},{"id":"w284","kr":"미안해요","pos":"","star":0,"ex":"","tr":{"en":"I'm sorry"}},{"id":"w285","kr":"여기요","pos":"","star":0,"ex":"","tr":{"en":"Over here (excuse me)"}},{"id":"w286","kr":"레몬차 주세요","pos":"","star":0,"ex":"","tr":{"en":"Please give me lemon tea."}},{"id":"w287","kr":"여기 있어요","pos":"","star":0,"ex":"","tr":{"en":"here it is"}},{"id":"w288","kr":"마리","pos":"","star":0,"ex":"","tr":{"en":"animal (counter)"}},{"id":"w289","kr":"가오리","pos":"","star":0,"ex":"","tr":{"en":"Sting ray"}},{"id":"w290","kr":"거미","pos":"","star":0,"ex":"","tr":{"en":"spider"}},{"id":"w291","kr":"나비","pos":"","star":0,"ex":"","tr":{"en":"butterfly"}},{"id":"w292","kr":"너구리","pos":"","star":0,"ex":"","tr":{"en":"raccoon"}},{"id":"w293","kr":"두더지","pos":"","star":0,"ex":"","tr":{"en":"mole"}},{"id":"w294","kr":"모기","pos":"","star":0,"ex":"","tr":{"en":"mosquito"}},{"id":"w295","kr":"사자","pos":"","star":0,"ex":"","tr":{"en":"lion"}},{"id":"w296","kr":"소","pos":"","star":0,"ex":"","tr":{"en":"cow"}},{"id":"w297","kr":"여우","pos":"","star":0,"ex":"","tr":{"en":"fox"}},{"id":"w298","kr":"오리","pos":"","star":0,"ex":"","tr":{"en":"duck"}},{"id":"w299","kr":"타조","pos":"","star":0,"ex":"","tr":{"en":"ostrich"}},{"id":"w300","kr":"파리","pos":"","star":0,"ex":"","tr":{"en":"fly (insect)"}},{"id":"w301","kr":"하마","pos":"","star":0,"ex":"","tr":{"en":"hippopotamus"}},{"id":"w302","kr":"강아지","pos":"","star":0,"ex":"","tr":{"en":"dog"}},{"id":"w303","kr":"고양이","pos":"","star":0,"ex":"","tr":{"en":"cat"}},{"id":"w304","kr":"구렁이","pos":"","star":0,"ex":"","tr":{"en":"serpent"}},{"id":"w305","kr":"망아지","pos":"","star":0,"ex":"","tr":{"en":"foal"}},{"id":"w306","kr":"병아리","pos":"","star":0,"ex":"","tr":{"en":"chick"}},{"id":"w307","kr":"부엉이","pos":"","star":0,"ex":"","tr":{"en":"owl"}},{"id":"w308","kr":"상어","pos":"","star":0,"ex":"","tr":{"en":"shark"}},{"id":"w309","kr":"송아지","pos":"","star":0,"ex":"","tr":{"en":"calf"}},{"id":"w310","kr":"스컹크","pos":"","star":0,"ex":"","tr":{"en":"skunk"}},{"id":"w311","kr":"양","pos":"","star":0,"ex":"","tr":{"en":"sheep"}},{"id":"w312","kr":"오징어","pos":"","star":0,"ex":"","tr":{"en":"squid"}},{"id":"w313","kr":"지렁이","pos":"","star":0,"ex":"","tr":{"en":"earthworm"}},{"id":"w314","kr":"호랑이","pos":"","star":0,"ex":"","tr":{"en":"tiger"}},{"id":"w315","kr":"이름","pos":"","star":0,"ex":"","tr":{"en":"name"}}]}]},{"id":"p8","n":8,"title":"Part 8","theme":"316–360","sections":[{"id":"p8-s","title":"words 316–360","cards":[{"id":"w316","kr":"저","pos":"","star":0,"ex":"","tr":{"en":"I (humble)"}},{"id":"w317","kr":"이","pos":"","star":0,"ex":"","tr":{"en":"this"}},{"id":"w318","kr":"분","pos":"","star":0,"ex":"","tr":{"en":"person (honorific)"}},{"id":"w319","kr":"뭐","pos":"","star":0,"ex":"","tr":{"en":"what"}},{"id":"w320","kr":"누구","pos":"","star":0,"ex":"","tr":{"en":"who"}},{"id":"w321","kr":"한국","pos":"","star":0,"ex":"","tr":{"en":"Korea"}},{"id":"w322","kr":"미국","pos":"","star":0,"ex":"","tr":{"en":"USA"}},{"id":"w323","kr":"영국","pos":"","star":0,"ex":"","tr":{"en":"England"}},{"id":"w324","kr":"독일","pos":"","star":0,"ex":"","tr":{"en":"Germany"}},{"id":"w325","kr":"러시아","pos":"","star":0,"ex":"","tr":{"en":"Russia"}},{"id":"w326","kr":"베트남","pos":"","star":0,"ex":"","tr":{"en":"Vietnam"}},{"id":"w327","kr":"중국","pos":"","star":0,"ex":"","tr":{"en":"China"}},{"id":"w328","kr":"일본","pos":"","star":0,"ex":"","tr":{"en":"Japan"}},{"id":"w329","kr":"태국","pos":"","star":0,"ex":"","tr":{"en":"Thailand"}},{"id":"w330","kr":"나라","pos":"","star":0,"ex":"","tr":{"en":"country"}},{"id":"w331","kr":"한국어","pos":"","star":0,"ex":"","tr":{"en":"Korean language"}},{"id":"w332","kr":"영어","pos":"","star":0,"ex":"","tr":{"en":"English (language)"}},{"id":"w333","kr":"영어","pos":"","star":0,"ex":"","tr":{"en":"English (language)"}},{"id":"w334","kr":"독일어","pos":"","star":0,"ex":"","tr":{"en":"German (language)"}},{"id":"w335","kr":"러시아어","pos":"","star":0,"ex":"","tr":{"en":"Russian language"}},{"id":"w336","kr":"베트남어","pos":"","star":0,"ex":"","tr":{"en":"Vietnamese Language"}},{"id":"w337","kr":"중국어","pos":"","star":0,"ex":"","tr":{"en":"Chinese language"}},{"id":"w338","kr":"일본어","pos":"","star":0,"ex":"","tr":{"en":"Japanese language"}},{"id":"w339","kr":"태국어","pos":"","star":0,"ex":"","tr":{"en":"Thai language"}},{"id":"w340","kr":"한국 사람","pos":"","star":0,"ex":"","tr":{"en":"Korean person"}},{"id":"w341","kr":"미국 사람","pos":"","star":0,"ex":"","tr":{"en":"American person"}},{"id":"w342","kr":"영국 사람","pos":"","star":0,"ex":"","tr":{"en":"English person"}},{"id":"w343","kr":"독일 사람","pos":"","star":0,"ex":"","tr":{"en":"German person"}},{"id":"w344","kr":"러시아 사람","pos":"","star":0,"ex":"","tr":{"en":"Russian person"}},{"id":"w345","kr":"베트남 사람","pos":"","star":0,"ex":"","tr":{"en":"Vietnamese person"}},{"id":"w346","kr":"중국 사람","pos":"","star":0,"ex":"","tr":{"en":"Chinese person"}},{"id":"w347","kr":"일본 사람","pos":"","star":0,"ex":"","tr":{"en":"Japanese person"}},{"id":"w348","kr":"태국 사람","pos":"","star":0,"ex":"","tr":{"en":"Thai person"}},{"id":"w349","kr":"경찰","pos":"","star":0,"ex":"","tr":{"en":"police officer"}},{"id":"w350","kr":"회사원","pos":"","star":0,"ex":"","tr":{"en":"office worker"}},{"id":"w351","kr":"의사","pos":"","star":0,"ex":"","tr":{"en":"doctor"}},{"id":"w352","kr":"요리사","pos":"","star":0,"ex":"","tr":{"en":"chef"}},{"id":"w353","kr":"학생","pos":"","star":0,"ex":"","tr":{"en":"student"}},{"id":"w354","kr":"선생님","pos":"","star":0,"ex":"","tr":{"en":"Teacher (honorific)"}},{"id":"w355","kr":"회계사","pos":"","star":0,"ex":"","tr":{"en":"accountant"}},{"id":"w356","kr":"변호사","pos":"","star":0,"ex":"","tr":{"en":"lawyer"}},{"id":"w357","kr":"간호사","pos":"","star":0,"ex":"","tr":{"en":"nurse"}},{"id":"w358","kr":"공무원","pos":"","star":0,"ex":"","tr":{"en":"government employee"}},{"id":"w359","kr":"약사","pos":"","star":0,"ex":"","tr":{"en":"pharmacist"}},{"id":"w360","kr":"기자","pos":"","star":0,"ex":"","tr":{"en":"journalist"}}]}]},{"id":"p9","n":9,"title":"Part 9","theme":"361–405","sections":[{"id":"p9-s","title":"words 361–405","cards":[{"id":"w361","kr":"배우","pos":"","star":0,"ex":"","tr":{"en":"actor/actress"}},{"id":"w362","kr":"개발자","pos":"","star":0,"ex":"","tr":{"en":"developer"}},{"id":"w363","kr":"연구원","pos":"","star":0,"ex":"","tr":{"en":"researcher"}},{"id":"w364","kr":"통역사","pos":"","star":0,"ex":"","tr":{"en":"interpreter"}},{"id":"w365","kr":"직업","pos":"","star":0,"ex":"","tr":{"en":"occupation"}},{"id":"w366","kr":"안녕하세요","pos":"","star":0,"ex":"","tr":{"en":"Hello (formal)"}},{"id":"w367","kr":"제 이름은 카렌입니다","pos":"","star":0,"ex":"","tr":{"en":"My name is Karen."}},{"id":"w368","kr":"만나서반갑습니다","pos":"","star":0,"ex":"","tr":{"en":"Pleased to meet you"}},{"id":"w369","kr":"안녕히가세요","pos":"","star":0,"ex":"","tr":{"en":"Goodbye (to person leaving)"}},{"id":"w370","kr":"안녕히계세요","pos":"","star":0,"ex":"","tr":{"en":"Goodbye (to person staying)"}},{"id":"w371","kr":"개미","pos":"","star":0,"ex":"","tr":{"en":"ant"}},{"id":"w372","kr":"얘기","pos":"","star":0,"ex":"","tr":{"en":"story"}},{"id":"w373","kr":"가게","pos":"","star":0,"ex":"","tr":{"en":"store"}},{"id":"w374","kr":"시계","pos":"","star":0,"ex":"","tr":{"en":"clock"}},{"id":"w375","kr":"과자","pos":"","star":0,"ex":"","tr":{"en":"snack"}},{"id":"w376","kr":"돼지","pos":"","star":0,"ex":"","tr":{"en":"pig"}},{"id":"w377","kr":"회사","pos":"","star":0,"ex":"","tr":{"en":"company"}},{"id":"w378","kr":"추워요","pos":"","star":0,"ex":"","tr":{"en":"It's cold"}},{"id":"w379","kr":"웨이터","pos":"","star":0,"ex":"","tr":{"en":"waiter"}},{"id":"w380","kr":"귀","pos":"","star":0,"ex":"","tr":{"en":"ear"}},{"id":"w381","kr":"의사","pos":"","star":0,"ex":"","tr":{"en":"doctor"}},{"id":"w382","kr":"매미","pos":"","star":0,"ex":"","tr":{"en":"cicada"}},{"id":"w383","kr":"화가","pos":"","star":0,"ex":"","tr":{"en":"painter, artist"}},{"id":"w384","kr":"쇠고기","pos":"","star":0,"ex":"","tr":{"en":"beef"}},{"id":"w385","kr":"의자","pos":"","star":0,"ex":"","tr":{"en":"chair"}},{"id":"w386","kr":"쥐","pos":"","star":0,"ex":"","tr":{"en":"rat"}},{"id":"w387","kr":"모래","pos":"","star":0,"ex":"","tr":{"en":"sand"}},{"id":"w388","kr":"우체국","pos":"","star":0,"ex":"","tr":{"en":"post office"}},{"id":"w389","kr":"세탁기","pos":"","star":0,"ex":"","tr":{"en":"washer"}},{"id":"w390","kr":"여덟","pos":"","star":0,"ex":"","tr":{"en":"eight"}},{"id":"w391","kr":"오렌지","pos":"","star":0,"ex":"","tr":{"en":"orange"}},{"id":"w392","kr":"화장실","pos":"","star":0,"ex":"","tr":{"en":"bathroom, restroom"}},{"id":"w393","kr":"동생","pos":"","star":0,"ex":"","tr":{"en":"younger brother/sister"}},{"id":"w394","kr":"닭","pos":"","star":0,"ex":"","tr":{"en":"chicken"}},{"id":"w395","kr":"위치","pos":"","star":0,"ex":"","tr":{"en":"location"}},{"id":"w396","kr":"시계","pos":"","star":0,"ex":"","tr":{"en":"clock, watch"}},{"id":"w397","kr":"택시","pos":"","star":0,"ex":"","tr":{"en":"taxi"}},{"id":"w398","kr":"도서관","pos":"","star":0,"ex":"","tr":{"en":"library"}},{"id":"w399","kr":"선생님","pos":"","star":0,"ex":"","tr":{"en":"teacher"}},{"id":"w400","kr":"회사원","pos":"","star":0,"ex":"","tr":{"en":"employee"}},{"id":"w401","kr":"전화","pos":"","star":0,"ex":"","tr":{"en":"telephone"}},{"id":"w402","kr":"이","pos":"","star":0,"ex":"","tr":{"en":"tooth"}},{"id":"w403","kr":"아우","pos":"","star":0,"ex":"","tr":{"en":"younger sibling"}},{"id":"w404","kr":"유아","pos":"","star":0,"ex":"","tr":{"en":"toddler"}},{"id":"w405","kr":"가구","pos":"","star":0,"ex":"","tr":{"en":"furniture"}}]}]},{"id":"p10","n":10,"title":"Part 10","theme":"406–441","sections":[{"id":"p10-s","title":"words 406–441","cards":[{"id":"w406","kr":"나무","pos":"","star":0,"ex":"","tr":{"en":"tree"}},{"id":"w407","kr":"구두","pos":"","star":0,"ex":"","tr":{"en":"shoes"}},{"id":"w408","kr":"라디오","pos":"","star":0,"ex":"","tr":{"en":"radio"}},{"id":"w409","kr":"바나나","pos":"","star":0,"ex":"","tr":{"en":"banana"}},{"id":"w410","kr":"가수","pos":"","star":0,"ex":"","tr":{"en":"singer"}},{"id":"w411","kr":"아기","pos":"","star":0,"ex":"","tr":{"en":"baby"}},{"id":"w412","kr":"바지","pos":"","star":0,"ex":"","tr":{"en":"pants"}},{"id":"w413","kr":"호수","pos":"","star":0,"ex":"","tr":{"en":"lake"}},{"id":"w414","kr":"까치","pos":"","star":0,"ex":"","tr":{"en":"magpie"}},{"id":"w415","kr":"코","pos":"","star":0,"ex":"","tr":{"en":"nose"}},{"id":"w416","kr":"머리띠","pos":"","star":0,"ex":"","tr":{"en":"headband"}},{"id":"w417","kr":"타조","pos":"","star":0,"ex":"","tr":{"en":"ostrich"}},{"id":"w418","kr":"뿌리","pos":"","star":0,"ex":"","tr":{"en":"root"}},{"id":"w419","kr":"포도","pos":"","star":0,"ex":"","tr":{"en":"grape"}},{"id":"w420","kr":"짜다","pos":"","star":0,"ex":"","tr":{"en":"salty"}},{"id":"w421","kr":"기차","pos":"","star":0,"ex":"","tr":{"en":"train"}},{"id":"w422","kr":"쓰다","pos":"","star":0,"ex":"","tr":{"en":"to write"}},{"id":"w423","kr":"요요","pos":"","star":0,"ex":"","tr":{"en":"yo-yo"}},{"id":"w424","kr":"아이","pos":"","star":0,"ex":"","tr":{"en":"child"}},{"id":"w425","kr":"우유","pos":"","star":0,"ex":"","tr":{"en":"milk"}},{"id":"w426","kr":"여우","pos":"","star":0,"ex":"","tr":{"en":"fox"}},{"id":"w427","kr":"오이","pos":"","star":0,"ex":"","tr":{"en":"cucumber"}},{"id":"w428","kr":"커피","pos":"","star":0,"ex":"","tr":{"en":"coffee"}},{"id":"w429","kr":"치즈","pos":"","star":0,"ex":"","tr":{"en":"cheese"}},{"id":"w430","kr":"토마토","pos":"","star":0,"ex":"","tr":{"en":"tomato"}},{"id":"w431","kr":"마우스","pos":"","star":0,"ex":"","tr":{"en":"mouse (computer)"}},{"id":"w432","kr":"피아노","pos":"","star":0,"ex":"","tr":{"en":"piano"}},{"id":"w433","kr":"모니터","pos":"","star":0,"ex":"","tr":{"en":"(computer) monitor"}},{"id":"w434","kr":"뉴스","pos":"","star":0,"ex":"","tr":{"en":"news"}},{"id":"w435","kr":"버스","pos":"","star":0,"ex":"","tr":{"en":"bus"}},{"id":"w436","kr":"파파이스","pos":"","star":0,"ex":"","tr":{"en":"Popeyes"}},{"id":"w437","kr":"H마트","pos":"","star":0,"ex":"","tr":{"en":"H Mart"}},{"id":"w438","kr":"바나나보트","pos":"","star":0,"ex":"","tr":{"en":"Banana boat"}},{"id":"w439","kr":"기프트카드","pos":"","star":0,"ex":"","tr":{"en":"Gift card"}},{"id":"w440","kr":"수박","pos":"","star":0,"ex":"","tr":{"en":"watermelon"}},{"id":"w441","kr":"걷다","pos":"","star":0,"ex":"","tr":{"en":"to walk"}}]}]}]};
+
+/* ---------- UI strings per language (the word translations live in DATA) ---------- */
+const I18N = {
+  en:{vocab:"Vocabulary",search:"Search Korean or English…",browse:"Browse",flash:"Flashcards",priority:"Priority",
+      reveal:"Reveal all",hide:"Hide all",pick:"Pick the chapters and sections you want to preview",selall:"All",selnone:"None",
+      tapflip:"tap to flip",prev:"Prev",gotit:"Got it",next:"Next",shuffle:"Shuffle",reset:"Reset known",
+      foot:"Tap a card to see the meaning. ★ marks priority words. Sogang Korean 1A.",
+      words:"words",sections:"sections",selected:"selected",learned:"learned",nomatch:"No words match.",
+      alldone:"All done for this selection!",again:"Tap 'Reset known' to study again",untr:"not translated yet",tap:"tap",pickch:"Which part do you want to study?",pickchsub:"You can change this later with the 📚 button.",allch:"All parts",cont:"Continue where you left off",pickpart:"Which part of {ch}?",wholech:"The whole chapter",back:"‹ Back",chbtn:"Parts"},
+  zh:{vocab:"词汇",search:"搜索韩语或中文…",browse:"浏览",flash:"闪卡",priority:"重点",
+      reveal:"全部显示",hide:"全部隐藏",pick:"选择要预习的课和部分",selall:"全选",selnone:"清空",
+      tapflip:"点击翻面",prev:"上一个",gotit:"记住了",next:"下一个",shuffle:"打乱",reset:"重置已记住",
+      foot:"点击卡片查看意思。★ 表示重点词。西江大学韩国语 5B。",
+      words:"个词",sections:"个部分",selected:"已选",learned:"已记住",nomatch:"没有匹配的词。",
+      alldone:"这部分都学完了！",again:"点击“重置已记住”再学一遍",untr:"尚未翻译",tap:"点击",pickch:"你想学习哪一课？",pickchsub:"之后可以用 📚 按钮更改。",allch:"全部课",cont:"继续上次的内容",pickpart:"{ch} 的哪个部分？",wholech:"整课",back:"‹ 返回",chbtn:"选课"},
+  zht:{vocab:"詞彙",search:"搜尋韓語或中文…",browse:"瀏覽",flash:"閃卡",priority:"重點",
+      reveal:"全部顯示",hide:"全部隱藏",pick:"選擇要預習的課和部分",selall:"全選",selnone:"清空",
+      tapflip:"點擊翻面",prev:"上一個",gotit:"記住了",next:"下一個",shuffle:"打亂",reset:"重設已記住",
+      foot:"點擊卡片查看意思。★ 表示重點詞。西江大學韓國語 5B。",
+      words:"個詞",sections:"個部分",selected:"已選",learned:"已記住",nomatch:"沒有符合的詞。",
+      alldone:"這部分都學完了！",again:"點擊「重設已記住」再學一遍",untr:"尚未翻譯",tap:"點擊",pickch:"你想學習哪一課？",pickchsub:"之後可以用 📚 按鈕更改。",allch:"全部課",cont:"繼續上次的內容",pickpart:"{ch} 的哪個部分？",wholech:"整課",back:"‹ 返回",chbtn:"選課"},
+  ru:{vocab:"Словарь",search:"Поиск по-корейски или по-русски…",browse:"Обзор",flash:"Карточки",priority:"Важные",
+      reveal:"Показать все",hide:"Скрыть все",pick:"Выберите уроки и разделы для просмотра",selall:"Все",selnone:"Ничего",
+      tapflip:"нажмите, чтобы перевернуть",prev:"Назад",gotit:"Знаю",next:"Дальше",shuffle:"Перемешать",reset:"Сбросить выученные",
+      foot:"Нажмите на карточку, чтобы увидеть значение. ★ — важные слова. Соган, корейский язык 5B.",
+      words:"слов",sections:"разделов",selected:"выбрано",learned:"выучено",nomatch:"Ничего не найдено.",
+      alldone:"В этом наборе всё выучено!",again:"Нажмите «Сбросить выученные», чтобы повторить",untr:"перевода пока нет",tap:"нажать",pickch:"Какой урок вы хотите учить?",pickchsub:"Потом это можно поменять кнопкой 📚.",allch:"Все уроки",cont:"Продолжить с прошлого раза",pickpart:"Какую часть урока {ch}?",wholech:"Весь урок",back:"‹ Назад",chbtn:"Урок"},
+  th:{vocab:"คำศัพท์",search:"ค้นหาภาษาเกาหลีหรือภาษาไทย…",browse:"ดูทั้งหมด",flash:"บัตรคำ",priority:"คำสำคัญ",
+      reveal:"แสดงทั้งหมด",hide:"ซ่อนทั้งหมด",pick:"เลือกบทและส่วนที่ต้องการดูล่วงหน้า",selall:"ทั้งหมด",selnone:"ไม่เลือก",
+      tapflip:"แตะเพื่อพลิก",prev:"ก่อนหน้า",gotit:"จำได้แล้ว",next:"ถัดไป",shuffle:"สลับ",reset:"รีเซ็ตที่จำได้",
+      foot:"แตะการ์ดเพื่อดูความหมาย ★ คือคำสำคัญ ภาษาเกาหลีซอกัง 5B",
+      words:"คำ",sections:"ส่วน",selected:"เลือกแล้ว",learned:"จำได้แล้ว",nomatch:"ไม่พบคำที่ตรงกัน",
+      alldone:"เรียนครบส่วนนี้แล้ว!",again:"แตะ 'รีเซ็ตที่จำได้' เพื่อเรียนอีกครั้ง",untr:"ยังไม่ได้แปล",tap:"แตะ",pickch:"อยากเรียนบทไหน?",pickchsub:"เปลี่ยนภายหลังได้ด้วยปุ่ม 📚",allch:"ทุกบท",cont:"เรียนต่อจากครั้งที่แล้ว",pickpart:"ส่วนไหนของ {ch}?",wholech:"ทั้งบท",back:"‹ ย้อนกลับ",chbtn:"เลือกบท"},
+  vi:{vocab:"Từ vựng",search:"Tìm bằng tiếng Hàn hoặc tiếng Việt…",browse:"Duyệt",flash:"Thẻ ghi nhớ",priority:"Trọng tâm",
+      reveal:"Hiện tất cả",hide:"Ẩn tất cả",pick:"Chọn bài và phần bạn muốn xem trước",selall:"Tất cả",selnone:"Bỏ chọn",
+      tapflip:"chạm để lật",prev:"Trước",gotit:"Đã thuộc",next:"Tiếp",shuffle:"Xáo trộn",reset:"Đặt lại đã thuộc",
+      foot:"Chạm vào thẻ để xem nghĩa. ★ là từ trọng tâm. Tiếng Hàn Sogang 5B.",
+      words:"từ",sections:"phần",selected:"đã chọn",learned:"đã thuộc",nomatch:"Không tìm thấy từ nào.",
+      alldone:"Đã học xong phần này!",again:"Chạm 'Đặt lại đã thuộc' để học lại",untr:"chưa có bản dịch",tap:"chạm",pickch:"Bạn muốn học bài nào?",pickchsub:"Có thể đổi sau bằng nút 📚.",allch:"Tất cả các bài",cont:"Tiếp tục từ lần trước",pickpart:"Phần nào của {ch}?",wholech:"Cả bài",back:"‹ Quay lại",chbtn:"Chọn bài"},
+};
+const LANGS = DATA.languages.map(l=>l.code);
+const BCP47 = {en:"en", zh:"zh-Hans", zht:"zh-Hant", th:"th", ru:"ru"};     // for lang= attributes (font selection)
+const htmlLang = code => BCP47[code] || code;
+const store = {
+  get(k){try{return localStorage.getItem(k);}catch(e){return null;}},
+  set(k,v){try{localStorage.setItem(k,v);}catch(e){}},
+};
+
+/* ---------- flatten ---------- */
+const ALL=[], SECTIONS=[];
+DATA.chapters.forEach(ch=>ch.sections.forEach(sec=>{
+  SECTIONS.push({id:sec.id,chId:ch.id,chTitle:ch.title,title:sec.title,n:sec.cards.length});
+  sec.cards.forEach(c=>ALL.push({...c,secId:sec.id,chId:ch.id,chTitle:ch.title,secTitle:sec.title}));
+}));
+
+const state={lang:null,mode:"browse",star:false,q:"",revealAll:false,
+             sel:new Set(SECTIONS.map(s=>s.id)),known:new Set(),fIdx:0,fList:[],fFlip:false};
+try{const k=JSON.parse(store.get("k1a_known")||"[]");k.forEach(x=>state.known.add(x));}catch(e){}
+try{const s=JSON.parse(store.get("k1a_sel")||"null");if(Array.isArray(s)&&s.length){state.sel=new Set(s.filter(id=>SECTIONS.some(x=>x.id===id)));}}catch(e){}
+
+const $=s=>document.querySelector(s);
+const isNarrow=()=>window.matchMedia("(max-width:640px)").matches;
+let langFolded=isNarrow();          // phones open with just the current language, not all six
+const T=k=>(I18N[state.lang]||I18N.en)[k]||I18N.en[k]||k;
+const trOf=c=>(c.tr&&c.tr[state.lang])||"";
+function esc(s){return String(s).replace(/[&<>"]/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[x]));}
+
+/* ---------- language ---------- */
+function applyLang(code,save){
+  state.lang=code; if(save)store.set("k1a_lang",code);
+  document.documentElement.setAttribute("data-lang",code);
+  document.querySelectorAll("[data-i]").forEach(el=>{
+    const k=el.dataset.i;
+    if(el.tagName==="INPUT")el.placeholder=T(k); else el.textContent=(k==="reveal"&&state.revealAll)?T("hide"):T(k);
+  });
+  const sw=$("#langsw");sw.innerHTML="";sw.classList.toggle("folded",langFolded);
+  DATA.languages.forEach(l=>{const b=document.createElement("button");b.className="btn"+(l.code===code?" active":"");
+    b.textContent=l.short||l.native;b.setAttribute("lang",htmlLang(l.code));
+    // folded (the default on a phone): only the current language shows and tapping it opens the row
+    b.onclick=()=>{ if(langFolded&&l.code===code){langFolded=false;sw.classList.remove("folded");return;}
+      langFolded=isNarrow();applyLang(l.code,true);render(); };
+    sw.appendChild(b);});
+  $("#totsub").textContent=ALL.length+" "+T("words")+" · "+SECTIONS.length+" "+T("sections");
+  $("#langpick").hidden=true;
+}
+function showLangPick(){
+  setLpHead("언어를 선택하세요","Choose your language · 选择你的语言 · เลือกภาษาของคุณ");
+  const box=$("#lpopts");box.innerHTML="";
+  DATA.languages.forEach(l=>{const b=document.createElement("button");b.className="opt";b.setAttribute("lang",htmlLang(l.code));
+    b.innerHTML=esc(l.native)+"<small>"+esc(l.name)+"</small>";b.onclick=()=>{applyLang(l.code,true);render();showChPick(false);};box.appendChild(b);});
+  $("#langpick").hidden=false;
+}
+
+/* ---------- chapter step: which chapter → which part (shown after the language and on every visit) ---------- */
+function setLpHead(title,sub){const h=$("#langpick h2"),p=$("#langpick p");h.textContent=title;p.textContent=sub||"";p.hidden=!sub;}
+function choose(ids){state.sel=new Set(ids);selChanged();$("#langpick").hidden=true;window.scrollTo(0,0);}
+function showChPick(offerContinue){
+  setLpHead(T("pickch"),T("pickchsub"));
+  const box=$("#lpopts");box.innerHTML="";
+  const saved=store.get("k1a_sel");
+  if(offerContinue&&saved&&state.sel.size){
+    const names=SECTIONS.filter(x=>state.sel.has(x.id));
+    const label=state.sel.size===SECTIONS.length?T("allch"):[...new Set(names.map(x=>x.chTitle))].length===1&&names.length<DATA.chapters.find(c=>c.title===names[0].chTitle).sections.length
+      ? names[0].chTitle+" · "+names.map(x=>x.title).join(", ") : [...new Set(names.map(x=>x.chTitle))].join(", ");
+    const c=document.createElement("button");c.className="opt go";c.innerHTML=esc(T("cont"))+"<small lang=\"ko\">"+esc(label)+"</small>";
+    c.onclick=()=>{$("#langpick").hidden=true;};box.appendChild(c);
+  }
+  const all=document.createElement("button");all.className="opt";all.innerHTML=esc(T("allch"))+"<small>"+ALL.length+" "+esc(T("words"))+"</small>";
+  all.onclick=()=>choose(SECTIONS.map(x=>x.id));box.appendChild(all);
+  const grid=document.createElement("div");grid.className="chgrid";
+  DATA.chapters.forEach(ch=>{const b=document.createElement("button");b.className="opt";
+    b.innerHTML=esc(ch.title)+"<small lang=\"ko\">"+esc((ch.theme||"").split(" · ")[0])+"</small>";
+    b.onclick=()=>showPartPick(ch);grid.appendChild(b);});
+  box.appendChild(grid);
+  $("#langpick").hidden=false;
+}
+function showPartPick(ch){
+  setLpHead(T("pickpart").replace("{ch}",ch.title),(ch.theme||""));
+  const box=$("#lpopts");box.innerHTML="";
+  const n=ch.sections.reduce((a,x)=>a+x.cards.length,0);
+  const whole=document.createElement("button");whole.className="opt go";whole.innerHTML=esc(T("wholech"))+"<small>"+n+" "+esc(T("words"))+"</small>";
+  whole.onclick=()=>choose(ch.sections.map(x=>x.id));box.appendChild(whole);
+  ch.sections.forEach(sec=>{const b=document.createElement("button");b.className="opt";b.setAttribute("lang","ko");
+    b.innerHTML=esc(sec.title)+"<small>"+sec.cards.length+" "+esc(T("words"))+"</small>";
+    b.onclick=()=>choose([sec.id]);box.appendChild(b);});
+  const back=document.createElement("button");back.className="back";back.textContent=T("back");back.onclick=()=>showChPick(true);box.appendChild(back);
+}
+$("#chTop").onclick=()=>showChPick(true);
+
+/* ---------- chapter / section picker ---------- */
+function buildPicker(){
+  const wrap=$("#chapters");wrap.innerHTML="";
+  DATA.chapters.forEach(ch=>{
+    const row=document.createElement("div");row.className="chrow";
+    const ids=ch.sections.map(s=>s.id), on=ids.filter(id=>state.sel.has(id)).length;
+    const name=document.createElement("span");name.className="chname"+(on===ids.length?" on":on?" part":"");
+    name.textContent=ch.title;name.title=ch.theme||"";
+    name.onclick=()=>{const all=ids.every(id=>state.sel.has(id));ids.forEach(id=>all?state.sel.delete(id):state.sel.add(id));selChanged();};
+    row.appendChild(name);
+    if(ch.theme){const t=document.createElement("span");t.className="chtheme";t.textContent=ch.theme;row.appendChild(t);}
+    ch.sections.forEach(sec=>{
+      const c=document.createElement("span");c.className="chip"+(state.sel.has(sec.id)?" on":"");
+      c.innerHTML=esc(sec.title)+'<span class="n">'+sec.cards.length+'</span>';
+      c.onclick=()=>{state.sel.has(sec.id)?state.sel.delete(sec.id):state.sel.add(sec.id);selChanged();};
+      row.appendChild(c);
+    });
+    wrap.appendChild(row);
+  });
+  // Summary stays visible when the picker is folded, so name the sections while that is still short.
+  const n=filtered().length, k=state.sel.size;
+  const what = (k>0&&k<=2)
+    ? SECTIONS.filter(s=>state.sel.has(s.id)).map(s=>s.chTitle+" · "+s.title).join(", ")
+    : k+" "+T("sections")+" "+T("selected");
+  $("#selcnt").textContent=what+" · "+n+" "+T("words");
+}
+function selChanged(){store.set("k1a_sel",JSON.stringify([...state.sel]));state.fIdx=0;buildPicker();render();}
+$("#selAll").onclick=()=>{SECTIONS.forEach(s=>state.sel.add(s.id));selChanged();};
+$("#selNone").onclick=()=>{state.sel.clear();selChanged();};
+
+/* ---------- picker fold ---------- */
+function setPicker(open,save){
+  $("#picker").classList.toggle("collapsed",!open);
+  $("#pickHdr").setAttribute("aria-expanded",open?"true":"false");
+  if(save)store.set("k1a_pickopen",open?"1":"0");
+}
+$("#pickHdr").onclick=e=>{ if(e.target.closest("button"))return;   // All / None must not fold it
+  setPicker($("#picker").classList.contains("collapsed"),true); };
+$("#pickHdr").onkeydown=e=>{ if(e.key===" "||e.key==="Enter"){e.preventDefault();
+  setPicker($("#picker").classList.contains("collapsed"),true);} };
+
+/* ---------- games fold (closed unless the reader opened it before) ---------- */
+function setGames(open,save){
+  $("#games").classList.toggle("collapsed",!open);
+  $("#gamesHdr").setAttribute("aria-expanded",open?"true":"false");
+  if(save)store.set("k1a_gamesopen",open?"1":"0");
+}
+$("#gamesHdr").onclick=()=>setGames($("#games").classList.contains("collapsed"),true);
+$("#gamesHdr").onkeydown=e=>{ if(e.key===" "||e.key==="Enter"){e.preventDefault();setGames($("#games").classList.contains("collapsed"),true);} };
+setGames(store.get("k1a_gamesopen")==="1",false);
+
+/* ---------- header fold: on a phone the title + search + buttons ate half the screen ---------- */
+function setHeader(open,save){
+  document.querySelector("header").classList.toggle("slim",!open);
+  $("#hdrTog").setAttribute("aria-expanded",open?"true":"false");
+  if(save)store.set("k1a_hdropen",open?"1":"0");
+}
+$("#hdrTog").onclick=()=>setHeader(document.querySelector("header").classList.contains("slim"),true);
+setHeader(store.get("k1a_hdropen")!=="0",false);
+
+/* ---------- filtering ---------- */
+function filtered(){
+  const q=state.q.trim().toLowerCase();
+  return ALL.filter(c=>{
+    if(!state.sel.has(c.secId))return false;
+    if(state.star&&!c.star)return false;
+    if(q){
+      const hay=[c.kr,trOf(c),c.tr&&c.tr.en||"",c.ex||""].join(" ").toLowerCase();
+      if(!hay.includes(q))return false;
+    }
+    return true;
+  });
+}
+
+/* ---------- browse ---------- */
+function trHtml(c,cls){
+  const t=trOf(c);
+  return t?'<div class="'+cls+'" lang="'+htmlLang(state.lang)+'">'+esc(t)+'</div>'
+          :'<div class="'+cls+' none">— '+esc(T("untr"))+(c.tr&&c.tr.en?' · '+esc(c.tr.en):'')+'</div>';
+}
+function renderBrowse(){
+  const list=filtered(),wrap=$("#browse");wrap.innerHTML="";
+  if(!list.length){wrap.innerHTML='<div class="empty">'+esc(T("nomatch"))+'</div>';return;}
+  const groups={};list.forEach(c=>{(groups[c.secId]=groups[c.secId]||[]).push(c);});
+  SECTIONS.forEach(s=>{
+    if(!groups[s.id])return;
+    const h=document.createElement("div");h.className="deckhdr";
+    h.innerHTML=esc(s.chTitle)+' · '+esc(s.title)+'<span class="ds">'+groups[s.id].length+' '+esc(T("words"))+'</span>';
+    wrap.appendChild(h);
+    const g=document.createElement("div");g.className="grid";
+    groups[s.id].forEach(c=>{
+      const el=document.createElement("div");
+      el.className="vc"+(state.revealAll?" revealed":"")+(state.known.has(c.id)?" known":"");
+      el.innerHTML=(c.pos?'<span class="pos">'+esc(c.pos)+'</span>':'')+(c.star?'<span class="star">★</span>':'')+
+        (c.grp?'<div class="grp" lang="ko">'+esc(c.grp)+'</div>':'')+
+        '<div class="kr" lang="ko">'+esc(c.kr)+'</div>'+trHtml(c,"tr")+
+        (c.ex?'<div class="ex" lang="ko">'+esc(c.ex)+(c.exEn?'<span class="exen"> — '+esc(c.exEn)+'</span>':'')+'</div>':'')+'<span class="tap">'+esc(T("tap"))+'</span>';
+      el.onclick=()=>el.classList.toggle("revealed");
+      g.appendChild(el);
+    });
+    wrap.appendChild(g);
+  });
+}
+
+/* ---------- flashcards ---------- */
+function buildFlashList(){state.fList=filtered().filter(c=>!state.known.has(c.id));if(state.fIdx>=state.fList.length)state.fIdx=0;}
+function showCard(){
+  const list=state.fList,fc=$("#fcard");
+  if(!list.length){
+    $("#fkr").textContent="🎉";$("#ftr").textContent=filtered().length?T("alldone"):T("nomatch");
+    $("#ftr").className="ftr";$("#ftr").style.display="block";$("#fex").style.display="none";
+    $("#fstar").style.display="none";$("#fpos").textContent="";$("#fmeta").textContent="";
+    $("#counter").textContent=filtered().length?T("again"):"";$("#pbar").style.width="100%";return;
+  }
+  const c=list[state.fIdx];fc.classList.remove("flip");state.fFlip=false;
+  $("#fkr").textContent=c.kr;
+  const t=trOf(c);$("#ftr").textContent=t||("— "+T("untr")+(c.tr&&c.tr.en?" · "+c.tr.en:""));
+  $("#ftr").className="ftr"+(t?"":" none");$("#ftr").setAttribute("lang",htmlLang(state.lang));$("#ftr").style.display="";
+  $("#fex").textContent=(c.ex||"")+(c.exEn?" — "+c.exEn:"");$("#fex").style.display=c.ex?"":"none";
+  $("#fstar").style.display=c.star?"":"none";$("#fpos").textContent=c.pos||"";
+  $("#fmeta").textContent=c.chTitle+" · "+c.secTitle+(c.grp?" · "+c.grp:"");
+  $("#counter").textContent=(state.fIdx+1)+" / "+list.length+"   ·   "+state.known.size+" "+T("learned");
+  $("#pbar").style.width=(state.fIdx/list.length*100)+"%";
+}
+function renderFlash(){buildFlashList();showCard();}
+function saveKnown(){store.set("k1a_known",JSON.stringify([...state.known]));}
+$("#fcard").onclick=()=>{state.fFlip=!state.fFlip;$("#fcard").classList.toggle("flip",state.fFlip);};
+$("#nextBtn").onclick=()=>{if(!state.fList.length)return;state.fIdx=(state.fIdx+1)%state.fList.length;showCard();};
+$("#prevBtn").onclick=()=>{if(!state.fList.length)return;state.fIdx=(state.fIdx-1+state.fList.length)%state.fList.length;showCard();};
+$("#knowBtn").onclick=()=>{const l=state.fList;if(!l.length)return;state.known.add(l[state.fIdx].id);saveKnown();renderFlash();};
+$("#shuffleBtn").onclick=()=>{buildFlashList();for(let i=state.fList.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[state.fList[i],state.fList[j]]=[state.fList[j],state.fList[i]];}state.fIdx=0;showCard();};
+$("#resetBtn").onclick=()=>{state.known.clear();saveKnown();state.fIdx=0;render();};
+document.addEventListener("keydown",e=>{
+  if(state.mode!=="flash"||e.target===$("#search"))return;
+  if(e.key===" "||e.key==="Enter"){e.preventDefault();$("#fcard").click();}
+  else if(e.key==="ArrowRight")$("#nextBtn").click();
+  else if(e.key==="ArrowLeft")$("#prevBtn").click();
+  else if(e.key.toLowerCase()==="k")$("#knowBtn").click();
+});
+
+/* ---------- controls ---------- */
+$("#mBrowse").onclick=()=>setMode("browse");
+$("#mFlash").onclick=()=>setMode("flash");
+function setMode(m){
+  state.mode=m;
+  $("#mBrowse").classList.toggle("active",m==="browse");$("#mFlash").classList.toggle("active",m==="flash");
+  $("#browse").style.display=m==="browse"?"":"none";$("#flash").style.display=m==="flash"?"flex":"none";
+  $("#revealAll").style.display=m==="browse"?"":"none";render();
+}
+$("#starOnly").onclick=()=>{state.star=!state.star;$("#starOnly").classList.toggle("active",state.star);state.fIdx=0;render();};
+$("#revealAll").onclick=()=>{state.revealAll=!state.revealAll;$("#revealAll").classList.toggle("active",state.revealAll);$("#revealAll").textContent=state.revealAll?T("hide"):T("reveal");renderBrowse();};
+$("#search").oninput=e=>{state.q=e.target.value;state.fIdx=0;render();};
+
+function render(){buildPicker();if(state.mode==="browse")renderBrowse();else renderFlash();}
+
+/* ---------- start ---------- */
+// First visit: folded on a phone (nine rows of chips would push the words off screen), open on a
+// wide screen. After that the reader's own choice wins.
+const savedOpen=store.get("k1a_pickopen");
+setPicker(savedOpen===null||savedOpen===undefined ? window.innerWidth>=760 : savedOpen==="1", false);
+const savedLang=store.get("k1a_lang");
+if(savedLang&&LANGS.includes(savedLang)){applyLang(savedLang,false);render();showChPick(true);}
+else{applyLang("en",false);render();showChPick(false);}
+if("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(()=>{});
+</script>
+</body>
+</html>
